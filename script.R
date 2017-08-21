@@ -3,7 +3,7 @@ library(tidytext)
 library(rvest)
 
 ## set some locale that works  # https://github.com/juliasilge/tidytext/issues/63
-Sys.setlocale(locale = "Czech_Czech Republic.1250")  # probably not this one
+Sys.setlocale(locale = "Czech_Czech Republic.1250")  # probably not this one 
 
 # https://www.w3schools.com/cssref/css_selectors.asp
 
