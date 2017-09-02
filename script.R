@@ -6,6 +6,8 @@ library(data.table)
 library(RDRPOSTagger)
 library(tokenizers)
 
+source("functions.R")
+
 # https://www.w3schools.com/cssref/css_selectors.asp
 
 urls <- c("https://www.novinky.cz/zahranicni/446613-z-valkou-zmitaneho-jizniho-sudanu-uteklo-do-ugandy-uz-milion-lidi-osn-zada-o-pomoc.html",
@@ -25,32 +27,6 @@ urls <- c("https://www.novinky.cz/zahranicni/446613-z-valkou-zmitaneho-jizniho-s
           "https://www.novinky.cz/zahranicni/446329-islamsky-stat-v-syrii-vyzval-k-povinnemu-dzihadu-v-rakce-se-pokusil-o-protiutok.html",
           "https://www.novinky.cz/zahranicni/446274-nemecke-soudy-jsou-zavalene-zalobami-zadatelu-o-azyl.html")
 
-extract_text_from_url <- function(url, css = "div.articleBody p") {
-  try(
-    url %>%
-      read_html() %>%
-      html_nodes(css = css) %>% 
-      html_text() %>%
-      paste(collapse = "\n")
-  )
-}
-
-extract_bigrams <- function(text, method = c("tau", "tokenizers")) {
-  method <- match.arg(method)
-  if (method == "tau") {
-    require("tau")
-    bigrams <- text %>% 
-      tau::textcnt(n = 2, split = " ", method = "string") %>%
-      names()
-  } else {
-    bigrams <- text %>% 
-      data_frame(text = .) %>%
-      unnest_tokens(bigram, text, token = "ngrams", n = 2, collapse = FALSE) %>%
-      `[[`("bigram")
-  }
-  bigrams
-}
-
 # get named character vectors
 bodies <- sapply(urls, extract_text_from_url)
 
@@ -62,11 +38,6 @@ bigrams <- lapply(bodies, extract_bigrams,
 
 # define model for word annotation
 tagger <- rdr_model(language = "Czech", annotation = "UniversalPOS")
-
-named_sentences_to_dt <- function(l) {
-  data.table(article = rep(names(l), lapply(l, length)),
-             sentence = unlist(l))
-}
 
 # get table of article urls and sentences containing migrant-related words
 filtered_sentences <- bodies %>% 
