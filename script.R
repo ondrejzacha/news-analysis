@@ -10,6 +10,8 @@ source("functions.R")
 
 # https://www.w3schools.com/cssref/css_selectors.asp
 
+text_pattern <- "(uprchlí(k|ci)|migranti*)(\\W|$)"
+
 urls <- c("https://www.novinky.cz/zahranicni/446613-z-valkou-zmitaneho-jizniho-sudanu-uteklo-do-ugandy-uz-milion-lidi-osn-zada-o-pomoc.html",
           "https://www.novinky.cz/zahranicni/blizky-a-stredni-vychod/446434-v-obklicenem-tall-afaru-neni-jidlo-utok-na-is-zatim-nezacne.html",
           "https://www.novinky.cz/zahranicni/blizky-a-stredni-vychod/446329-islamsky-stat-v-syrii-vyzval-k-povinnemu-dzihadu-v-rakce-se-pokusil-o-protiutok.html",
@@ -43,7 +45,7 @@ tagger <- rdr_model(language = "Czech", annotation = "UniversalPOS")
 filtered_sentences <- bodies %>% 
   tokenize_sentences() %>%
   named_sentences_to_df() %>%
-  filter(str_detect(sentence, "(uprchl|migrant)")) %>%
+  filter(str_detect(sentence, text_pattern)) %>%
   transform(art_id = group_indices(., article)) %>%
   group_by(art_id) %>%
   mutate(sen_id = seq_along(sentence)) %>%
@@ -54,4 +56,33 @@ filtered_sentences <- bodies %>%
 analyzed_sentences <- rdr_pos(tagger, 
                               x = filtered_sentences$sentence,
                               doc_id = filtered_sentences$comp_id) %>%
-  as_data_frame()
+  as_data_frame() 
+analyzed_sentences
+
+interesting_sentences <- analyzed_sentences %>% 
+  group_by(doc_id) %>%
+  # only filter sentences that contain a matching word as a noun AND a verb
+  filter(sum((str_detect(token, text_pattern) & 
+                pos == "NOUN") | 
+               pos == "VERB") > 1) %>% 
+  arrange(doc_id)
+interesting_sentences
+
+# look at noun-verb combinations
+noun_verb_combinations <- interesting_sentences %>% 
+  filter((str_detect(token, text_pattern) & pos == "NOUN") | pos == "VERB") %>% 
+  arrange(doc_id)
+noun_verb_combinations
+
+noun_verb_selected <- noun_verb_combinations %>%
+  group_by(doc_id) %>%
+  mutate(noun_position = sum(token_id * (pos == "NOUN")),
+         dist_from_noun = abs(token_id - noun_position),
+         closest_verb = dist_from_noun == min(dist_from_noun[pos != "NOUN"])) %>%
+  filter(closest_verb == TRUE | pos == "NOUN")
+noun_verb_selected
+
+extracted_phrases <- noun_verb_selected %>%
+  summarize(phrase = paste(token[pos == "NOUN"], token[pos == "VERB"]))
+# this only works with one verb and one noun per doc_id!
+extracted_phrases
