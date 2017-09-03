@@ -42,11 +42,16 @@ tagger <- rdr_model(language = "Czech", annotation = "UniversalPOS")
 # get table of article urls and sentences containing migrant-related words
 filtered_sentences <- bodies %>% 
   tokenize_sentences() %>%
-  named_sentences_to_dt() %>%
-  filter(str_detect(sentence, "(uprchl|migrant)"))
+  named_sentences_to_df() %>%
+  filter(str_detect(sentence, "(uprchl|migrant)")) %>%
+  transform(art_id = group_indices(., article)) %>%
+  group_by(art_id) %>%
+  mutate(sen_id = seq_along(sentence)) %>%
+  ungroup() %>%
+  mutate(comp_id = paste0(art_id, "-", sen_id))
 
 # get table of words and their functions, by article
 analyzed_sentences <- rdr_pos(tagger, 
                               x = filtered_sentences$sentence,
-                              doc_id = filtered_sentences$article) %>%
-  data.table()
+                              doc_id = filtered_sentences$comp_id) %>%
+  as_data_frame()

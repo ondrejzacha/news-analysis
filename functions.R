@@ -24,7 +24,7 @@ extract_bigrams <- function(text, method = c("tau", "tokenizers")) {
   bigrams
 }
 
-named_sentences_to_dt <- function(l) {
-  data.table(article = rep(names(l), lapply(l, length)),
+named_sentences_to_df <- function(l) {
+  data_frame(article = rep(names(l), lapply(l, length)),
              sentence = unlist(l))
 }
