@@ -2,10 +2,6 @@ library(tidyverse)
 library(rvest)
 library(stringr)
 
-list1 <- "https://www.novinky.cz/hledej?w=uprchl%C3%ADci&isPhrase=0&section=-1&excludeWords=&dateFrom=1.9.2016&dateTo=1.9.2017&page=1"
-
-l2 <- "https://www.novinky.cz/hledej?w=uprchlíci&isPhrase=0&section=-1&excludeWords=&dateFrom=1.9.2016&dateTo=1.9.2017&page=1"
-
 novinky_make_listing_url <- function(query = "uprchlíci",
                                      exact_phrase = 0,
                                      section = -1,
@@ -79,7 +75,7 @@ novinky_get_all_links <- function(query = "uprchlíci",
   unique(all_urls)
 }
 
-extract_text_from_url <- function(url, css = "div.articleBody p") {
+extract_text_from_url_novinky <- function(url, css = "div.articleBody p") {
   try(
     url %>%
       read_html() %>%
