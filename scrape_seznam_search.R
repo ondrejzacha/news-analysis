@@ -10,11 +10,14 @@ seznam_get_links_from_listing_url <- function(url) {
 }
 
 seznam_get_all_urls <- function(query = "uprchlíci",
-                                 site = "parlamentnilisty.cz",
-                                 approx_n_results = NULL,
-                                 sleep_secs = 0) {
-  # browser()
-  basic_url <- paste0("https://search.seznam.cz/?q=site%3A",
+                                site = "parlamentnilisty.cz",
+                                domain = c("search", "clanky"),
+                                approx_n_results = NULL,
+                                sleep_secs = 0) {
+  domain <- match.arg(domain)
+  basic_url <- paste0("https://",
+                      domain,
+                      ".seznam.cz/?q=site%3A",
                       site,
                       "+",
                       query,
