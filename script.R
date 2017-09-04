@@ -1,8 +1,8 @@
 library(tidyverse)
-library(tidytext)
+# library(tidytext)
 library(rvest)
 library(stringr)
-library(data.table)
+# library(data.table)
 library(RDRPOSTagger)
 library(tokenizers)
 
@@ -30,7 +30,7 @@ urls <- c("https://www.novinky.cz/zahranicni/446613-z-valkou-zmitaneho-jizniho-s
           "https://www.novinky.cz/zahranicni/446274-nemecke-soudy-jsou-zavalene-zalobami-zadatelu-o-azyl.html")
 
 # get named character vectors
-bodies <- sapply(urls, extract_text_from_url)
+bodies <- sapply(urls, extract_text_from_url_novinky)
 
 # get corresponding bigram vectors
 bigrams <- lapply(bodies, extract_bigrams, 
@@ -83,6 +83,7 @@ noun_verb_selected <- noun_verb_combinations %>%
 noun_verb_selected
 
 extracted_phrases <- noun_verb_selected %>%
-  summarize(phrase = paste(token[pos == "NOUN"], token[pos == "VERB"]))
+  summarize(phrase = paste(token[pos == "NOUN"], 
+                           token[pos == "VERB"]))
 # this only works with one verb and one noun per doc_id!
 extracted_phrases

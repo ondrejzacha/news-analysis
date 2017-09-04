@@ -1,13 +1,3 @@
-extract_text_from_url <- function(url, css = "div.articleBody p") {
-  try(
-    url %>%
-      read_html() %>%
-      html_nodes(css = css) %>% 
-      html_text() %>%
-      paste(collapse = "\n")
-  )
-}
-
 extract_bigrams <- function(text, method = c("tau", "tokenizers")) {
   method <- match.arg(method)
   if (method == "tau") {
