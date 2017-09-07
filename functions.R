@@ -1,3 +1,5 @@
+# https://www.w3schools.com/cssref/css_selectors.asp
+
 extract_bigrams <- function(text, method = c("tau", "tokenizers")) {
   method <- match.arg(method)
   if (method == "tau") {
