@@ -1,13 +1,13 @@
 library(tidyverse)
-# library(tidytext)
 library(rvest)
 library(stringr)
-# library(data.table)
 # Sys.setenv(JAVA_HOME = 'C:\\Program Files\\Java\\jre1.8.0_144') 
 library(RDRPOSTagger)
 library(tokenizers)
 
 source("functions.R")
+source("scrape_novinky.R")
+source("scrape_seznam_search.R")
 
 text_pattern <- "(uprchlí(k|ci)|migranti*)(\\W|$)"
 
@@ -15,7 +15,9 @@ text_pattern <- "(uprchlí(k|ci)|migranti*)(\\W|$)"
 novinky_urls <- novinky_get_all_links()
 
 # get named character vectors
-novinky_bodies <- sapply(novinky_urls, extract_text_from_url_novinky)
+novinky_bodies <- sapply(novinky_urls, 
+                         function(url) extract_text_from_url(url = url,
+                                                             website = "novinky"))
 
 # get corresponding bigram vectors
 novinky_bigrams <- lapply(novinky_bodies, extract_bigrams, 

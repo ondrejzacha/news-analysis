@@ -77,13 +77,3 @@ novinky_get_all_links <- function(query = "uprchlíci",
   unique(all_urls)
 }
 
-extract_text_from_url_novinky <- function(url, css = "div.articleBody p") {
-  try(
-    url %>%
-      read_html() %>%
-      html_nodes(css = css) %>% 
-      html_text() %>%
-      paste(collapse = "\n")
-  )
-}
-
