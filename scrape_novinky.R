@@ -50,7 +50,8 @@ novinky_get_all_links <- function(query = "uprchlíci",
                                   section = -1,
                                   exclude = "",
                                   date_from = "1.9.2016",
-                                  date_to = "") {
+                                  date_to = "",
+                                  sleep_secs = 0) {
   last_page <- novinky_get_last_listing_page(
     novinky_make_listing_url(query = query,
                              exact_phrase = exact_phrase,
@@ -62,6 +63,7 @@ novinky_get_all_links <- function(query = "uprchlíci",
   )
   all_urls <- unlist(lapply(1:last_page, 
                             function(page) {
+                              Sys.sleep(sleep_secs)
                               novinky_get_links_from_listing_url(
                                 novinky_make_listing_url(query = query,
                                                          exact_phrase = exact_phrase,
