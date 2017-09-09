@@ -27,6 +27,7 @@ novinky_make_listing_url <- function(query = "uprchlíci",
 
 novinky_get_links_from_listing_url <- function(url) {
   url %>%
+    url_connection(handle = new_handle()) %>%
     read_html() %>%
     html_nodes("div.item div.info a") %>% 
     html_attr("href")
@@ -34,6 +35,7 @@ novinky_get_links_from_listing_url <- function(url) {
 
 novinky_get_last_listing_page <- function(first_url) {
   max_from_page <- first_url %>%
+    url_connection(handle = new_handle()) %>%
     read_html() %>% 
     html_nodes("div#msgLine strong") %>% 
     html_text() %>% 

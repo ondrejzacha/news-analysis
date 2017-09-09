@@ -4,6 +4,7 @@ library(stringr)
 
 seznam_get_links_from_listing_url <- function(url) {
   url %>%
+    url_connection(handle = new_handle()) %>%
     read_html() %>%
     html_nodes("div.Result-contentContainer a.Result-url-link") %>%
     html_attr("href")

@@ -5,6 +5,7 @@ library(stringr)
 library(RDRPOSTagger)
 library(tokenizers)
 
+source("config.R")
 source("functions.R")
 source("scrape_novinky.R")
 source("scrape_seznam_search.R")
