@@ -68,7 +68,8 @@ extract_text_from_url <- function(url,
   text
 }
 
-extract_phrases_from_bodies <- function(bodies) {
+extract_phrases_from_bodies <- function(bodies, browser = FALSE) {
+  if (browser) browser()
   # get table of article urls and sentences containing migrant-related words
   filtered_sentences <- bodies %>% 
     tokenize_sentences() %>%
@@ -113,11 +114,9 @@ extract_phrases_from_bodies <- function(bodies) {
     .[rep(x = 1:nrow(.), times = .$nouns), ] %>%
     group_by(doc_id, token_id) %>%
     # create a new id for replicated groups 
-    mutate(copy_id = ifelse(nouns > 1,
-                            seq_along(token_id),
-                            -1L)) %>%
+    mutate(copy_id = seq_along(token_id)) %>%
     # and make sure there's only one noun in each group
-    filter(noun_order != copy_id) 
+    filter(pos != "NOUN" | noun_order == copy_id)
   print(noun_verb_processed)
   
   # select nouns and verbs per group
