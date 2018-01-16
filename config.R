@@ -1,4 +1,4 @@
-options(sleep_sec_interval = c(1, 10),
+options(sleep_sec_interval = c(1, 10), 
         user_agent_strings = 
           c("Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1b3) Gecko/20090305 Firefox/3.1b3 GTB5",
             "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; ko; rv:1.9.1b2) Gecko/20081201 Firefox/3.1b2",
